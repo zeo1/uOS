@@ -15,6 +15,7 @@
   "scripts": {
     "start": "react-scripts build",
     "build": "react-scripts build",
+    "now-build": "react-scripts build && mv build dist",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
