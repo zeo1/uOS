@@ -7,7 +7,7 @@
   "description": "web desktop focused on productivity",
   "icons": [
     {
-      "src": "./icon_192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     }

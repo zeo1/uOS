@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "uOS",
+  "alias": ["uos.now.sh"],
   "builds": [
     {
       "src": "package.json",
