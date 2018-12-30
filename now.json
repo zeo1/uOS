@@ -1,6 +1,16 @@
 {
-  "type": "NPM",
-  "github": {
-    "silent": true
-  }
+  "version": 2,
+  "name": "uOS",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/static-build"
+    }
+  ],
+  "routes": [
+    {
+      "src": "^/public/(.*)",
+      "dest": "/public/$1"
+    }
+  ]
 }
