@@ -1,0 +1,6 @@
+{
+  "type": "NPM",
+  "github": {
+    "silent": true
+  }
+}

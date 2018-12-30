@@ -1,7 +1,9 @@
+body {
+  background: #222;
+}
 #root {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 16px;
-  background: #222;
 }
 
 .cursor {
