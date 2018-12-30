@@ -1,0 +1,35 @@
+#root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  background: #222;
+}
+
+.cursor {
+  animation: blink 1s ease-in infinite;
+  position: absolute;
+}
+@keyframes blink {
+  to {
+    opacity: 0;
+  }
+}
+
+input {
+  border: 0;
+  caret-color: red;
+}
+input:focus {
+  outline: 0;
+}
+
+.react-trello-card {
+  border: 0 !important;
+  max-width: 300px !important;
+}
+.react-trello-lane {
+  background-color: #111 !important;
+  margin: 10px !important;
+  color: #099 !important;
+  width: 300px !important;
+  box-shadow: 0 1px 5px 2px #000, inset 0 0 2px 0px rgba(255, 255, 255, 0.05) !important;
+}

@@ -1,2 +1,0 @@
-# uOS
-Created with CodeSandbox
