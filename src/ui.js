@@ -32,6 +32,7 @@ onkeydown = e => {
   let abbr = event2abbr(e)
   console.log(abbr)
   let kmap = document.activeElement === document.body ? app.nmap : app.imap
+  if (!kmap || !app.action) return
   let command = kmap[abbr]
   if (!command || !isa(command)) return
   e.preventDefault()

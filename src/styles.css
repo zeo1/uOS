@@ -1,3 +1,8 @@
+html,
+body,
+#root {
+  height: 100%;
+}
 body {
   background: #222;
 }
@@ -5,7 +10,9 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 16px;
 }
-
+.shadow {
+  box-shadow: 0 1px 5px 2px #000, inset 0 0 2px 0 hsla(0, 0%, 100%, 0.05);
+}
 .cursor {
   animation: blink 1s ease-in infinite;
   position: absolute;
@@ -23,7 +30,7 @@ input {
 input:focus {
   outline: 0;
 }
-
+/* kanban */
 .react-trello-card {
   border: 0 !important;
   max-width: 300px !important;
@@ -34,4 +41,18 @@ input:focus {
   color: #099 !important;
   width: 300px !important;
   box-shadow: 0 1px 5px 2px #000, inset 0 0 2px 0px rgba(255, 255, 255, 0.05) !important;
+}
+/* editor */
+.CodeMirror {
+  height: 100% !important;
+  line-height: 24px;
+}
+.CodeMirror-cursor {
+  border-color: red !important;
+}
+.CodeMirror-lines {
+  padding: 0 !important;
+}
+.CodeMirror-line {
+  padding-left: 8px !important;
 }

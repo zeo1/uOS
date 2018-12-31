@@ -5,6 +5,7 @@
   "keywords": ["desktop", "productivity"],
   "main": "src/index.js",
   "dependencies": {
+    "codemirror": "5.42.2",
     "lodash": "4.17.11",
     "react": "16.7.0",
     "react-dom": "16.7.0",

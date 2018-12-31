@@ -1,3 +1,5 @@
+import './styles.css'
+
 import { createElement } from 'react'
 import { iss, isa, iso, c } from './util'
 import { each } from 'lodash'
