@@ -144,7 +144,7 @@ function view() {
         onDataChange: action.save,
         data: { lanes },
         backgroundColor: 'transparent',
-        width: 1280,
+        width: 1290,
         margin: 'auto',
         draggable: true,
         customCardLayout: true
