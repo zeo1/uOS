@@ -11,6 +11,7 @@ require('codemirror/addon/edit/continuelist')
 require('codemirror/addon/edit/closebrackets.js')
 require('codemirror/addon/selection/active-line.js')
 
+let cm
 function view() {
   render(
     h('div pa3 h-100', [
@@ -20,7 +21,7 @@ function view() {
     ]),
     document.getElementById('root')
   )
-  let cm = CodeMirror.fromTextArea($('textarea'), {
+  cm = CodeMirror.fromTextArea($('textarea'), {
     mode: 'gfm',
     keyMap: 'sublime',
     theme: 'base16-dark',
