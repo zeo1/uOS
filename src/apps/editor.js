@@ -1,16 +1,15 @@
 import { h } from '../view'
 import { render } from 'react-dom'
 import { $ } from '../util'
-
-let CodeMirror = require('codemirror')
-require('codemirror/lib/codemirror.css')
-require('codemirror/mode/gfm/gfm')
-require('codemirror/keymap/sublime')
-require('codemirror/theme/base16-dark.css')
-require('codemirror/addon/edit/continuelist')
-require('codemirror/addon/edit/closebrackets.js')
-require('codemirror/addon/selection/active-line.js')
 import load from '../data/load'
+import CodeMirror from 'codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/gfm/gfm'
+import 'codemirror/keymap/sublime'
+import 'codemirror/theme/base16-dark.css'
+import 'codemirror/addon/edit/continuelist'
+import 'codemirror/addon/edit/closebrackets.js'
+import 'codemirror/addon/selection/active-line.js'
 
 export default {
   view,
