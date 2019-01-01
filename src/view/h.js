@@ -1,10 +1,9 @@
 import './styles.css'
 
 import { createElement } from 'react'
-import { iss, isa, iso, c } from './util'
-import { each } from 'lodash'
+import { iss, isa, iso, c, each } from '../util'
 
-export function h(tag, props, ...children) {
+export default function h(tag, props, ...children) {
   if (iso(tag)) {
     children.unshift(props)
     props = tag

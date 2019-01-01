@@ -1,10 +1,11 @@
 import u from 'lodash'
 
-let $ = document.querySelector.bind(document),
-  c = console.log,
+let c = console.log,
+  $ = document.querySelector.bind(document),
   isa = u.isArray,
   iso = u.isPlainObject,
   iss = u.isString,
-  isf = u.isFunction
+  isf = u.isFunction,
+  each = u.each
 
-export { $, iso, isa, iss, isf, c }
+export { c, $, isa, iso, iss, isf, each }

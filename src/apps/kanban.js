@@ -1,9 +1,8 @@
 import { render } from 'react-dom'
 import { Board } from 'react-trello'
-import { h } from '../view'
+import { ui, h } from '../view'
 import { $ } from '../util'
 import load from '../data/load'
-import ui from '../ui'
 
 let lanes,
   local,

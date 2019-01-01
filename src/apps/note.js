@@ -1,5 +1,5 @@
-import { h } from '../view'
 import { render } from 'react-dom'
+import { h } from '../view'
 import { $ } from '../util'
 import load from '../data/load'
 import CodeMirror from 'codemirror'

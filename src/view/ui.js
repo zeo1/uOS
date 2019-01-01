@@ -1,6 +1,5 @@
-import { each } from 'lodash'
-import { isa } from './util'
-import apps from './apps'
+import { isa, each } from '../util'
+import apps from '../apps'
 
 let modAbbr = { acms: 'H', cms: 'A', ams: 'C', acs: 'M', acm: 'S' }
 let keyAbbr = {
