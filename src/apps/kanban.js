@@ -28,7 +28,7 @@ function open(id) {
           { title: 'Review', cards: [] }
         ]
       }
-      l.update(kanban)
+      l.insert(kanban)
     }
     if (kanban.iCard) {
       iLane = kanban.iLane
