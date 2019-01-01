@@ -50,7 +50,7 @@ function open(id) {
         'div shadow border-box h-100',
         { width: '37em', margin: 'auto' },
         [
-          'input bg-transparent white b pa2',
+          'input bg-transparent white b pa2 w-100',
           { id: 'name', onChange, defaultValue: item.name }
         ],
         ['textarea', { defaultValue: item.notion }]
