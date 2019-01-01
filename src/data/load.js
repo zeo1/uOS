@@ -27,16 +27,6 @@ function load_local() {
 
 let initData = [
   {
-    name: new Date().toJSON().slice(0, 10),
-    tags: 'kanban',
-    notion: [
-      { title: 'Inbox', cards: [] },
-      { title: 'Next', cards: [] },
-      { title: 'Log', cards: [] },
-      { title: 'Review', cards: [] }
-    ]
-  },
-  {
     name: 'desktop',
     tags: 'setting keymap',
     notion: ['m viewer meta', 't viewer task', 'k viewer setting']

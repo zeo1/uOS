@@ -17,6 +17,19 @@ function open(id) {
       name: new Date().toJSON().slice(0, 10),
       tags: 'kanban'
     })
+    if (!kanban) {
+      kanban = {
+        name: new Date().toJSON().slice(0, 10),
+        tags: 'kanban',
+        notion: [
+          { title: 'Inbox', cards: [] },
+          { title: 'Next', cards: [] },
+          { title: 'Log', cards: [] },
+          { title: 'Review', cards: [] }
+        ]
+      }
+      l.update(kanban)
+    }
     if (kanban.iCard) {
       iLane = kanban.iLane
       iCard = kanban.iCard
