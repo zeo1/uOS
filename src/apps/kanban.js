@@ -2,17 +2,33 @@ import { render } from 'react-dom'
 import { Board } from 'react-trello'
 import { h } from '../view'
 import { $ } from '../util'
-// delete localStorage.kanbanLanes
+import load from '../data/load'
+
+let lanes, local, kanban
+function open(id) {
+  load(l => {
+    local = l
+    kanban = l.findOne({
+      name: new Date().toJSON().slice(0, 10),
+      tags: 'kanban'
+    })
+    lanes = kanban.notion.map(({ title, cards }) => {
+      return {
+        title,
+        id: title,
+        cards: cards.map(c => {
+          let r = l.get(c)
+          r.id = r.$loki + ''
+          return r
+        })
+      }
+    })
+    view()
+  })
+}
 let iInterval,
   iLane = 0,
-  iCard = 0,
-  lanes = localStorage.kanbanLanes
-    ? JSON.parse(localStorage.kanbanLanes)
-    : ['Inbox', 'Next', 'Log', 'Reflect'].map((title, id) => ({
-        id: id + '',
-        title,
-        cards: [{ id: id + '', name: 'card ' + id, timer: '0:00' }]
-      }))
+  iCard = 0
 let imap = {
   up: ['focus_up', 1],
   dn: ['focus_dn', 1],
@@ -41,20 +57,21 @@ let action = {
   },
   focus: focus_curent_card,
   add() {
-    let id = Date.now() + ''
-    lanes[iLane].cards.unshift({
-      id,
-      laneId: lanes[iLane].id,
-      name: '',
-      timer: '0:00'
-    })
-    view()
+    let c = local.insert({ name: '', timecost: '0:00', notion: '', tags: '' })
+    c.id = c.$loki + ''
+    c.laneId = lanes[iLane].id
+    lanes[iLane].cards.unshift(c)
+    action.save()
     iCard = 0
-    focus_curent_card()
+    view(1)
   },
   rm() {
-    lanes[iLane].cards.splice(iCard, 1)
-    if ((iCard = lanes[iLane].cards.length)) iCard--
+    let cards = lanes[iLane].cards
+    let c = cards[iCard]
+    cards.splice(iCard, 1)
+    if (iCard == cards.length) iCard--
+    if (iCard < 0) iCard = 0
+    if (!iCard.notion) local.remove(c)
   },
   focus_up(b) {
     if (iCard > 0) {
@@ -82,19 +99,21 @@ let action = {
     if (b) focus_curent_card()
   },
   mv_lft() {
-    let card = lanes[iLane].cards[iCard]
-    action.rm()
+    let cards = lanes[iLane].cards
+    let c = cards[iCard]
+    cards.splice(iCard, 1)
     if (--iLane < 0) iLane = lanes.length - 1
-    card.laneId = lanes[iLane].id
-    lanes[iLane].cards.unshift(card)
+    c.laneId = lanes[iLane].id
+    lanes[iLane].cards.unshift(c)
     iCard = 0
   },
   mv_rit() {
-    let card = lanes[iLane].cards[iCard]
-    action.rm()
+    let cards = lanes[iLane].cards
+    let c = cards[iCard]
+    cards.splice(iCard, 1)
     if (++iLane === lanes.length) iLane = 0
-    card.laneId = lanes[iLane].id
-    lanes[iLane].cards.unshift(card)
+    c.laneId = lanes[iLane].id
+    lanes[iLane].cards.unshift(c)
     iCard = 0
   },
   mv_up() {
@@ -113,30 +132,37 @@ let action = {
   },
   save(data) {
     if (data) lanes = data.lanes
-    localStorage.kanbanLanes = JSON.stringify(lanes)
+    kanban.notion = lanes.map((l, i) => ({
+      cards: l.cards.map(c => c.$loki),
+      title: l.title
+    }))
   },
   startTimer() {
     let card = lanes[iLane].cards[iCard]
-    let [min, sec] = card.timer.split(':')
-    let time = min * 60 + sec * 1
+    if (card.timecost) {
+      let [min, sec] = card.timecost.split(':')
+      var time = min * 60 + sec * 1
+    } else {
+      var time = 0
+    }
     clearInterval(iInterval)
-    if (isNaN(time) || time > 9960) return
+    if (isNaN(time) || time > 60 * 999) return
     iInterval = setInterval(function() {
       time++
       let sec = ('0' + (time % 60)).slice(-2)
       let min = Math.floor(time / 60)
-      $('#timer' + card.id).value = card.timer = min + ':' + sec
-      action.save()
+      $('#timecost' + card.$loki).value = card.timecost = min + ':' + sec
+      local.update(card)
     }, 1000)
   }
 }
 function focus_curent_card() {
   action.startTimer()
-  $('#name' + lanes[iLane].cards[iCard].id).focus()
+  $('#name' + lanes[iLane].cards[iCard].$loki).focus()
 }
 
-function view() {
-  action.save()
+function view(focus) {
+  if (!lanes) return
   render(
     h(
       Board,
@@ -153,6 +179,9 @@ function view() {
     ),
     $('#root')
   )
+  if (focus) focus_curent_card()
+  action.save()
+  local.update(kanban)
 }
 function CustomCard(props) {
   function find_card() {
@@ -161,8 +190,9 @@ function CustomCard(props) {
   }
   function change(key) {
     return e => {
-      find_card()[key] = $('#' + key + props.id).value
-      action.save()
+      let card = find_card()
+      card[key] = $('#' + key + props.$loki).value
+      local.update(card)
     }
   }
   function onClick() {
@@ -175,12 +205,12 @@ function CustomCard(props) {
     return props.index === iCard && props.laneId === lanes[iLane].id
   }
   let color = isSelect() ? 'red' : 'moon-gray'
-  return h('div bg-near-black w-100', { onClick }, [
+  return h('div bg-near-black w-100', [
     'header flex justify-between',
     [
       'input pv1 outline-0 moon-gray b bg-transparent bn w-100',
       {
-        id: 'name' + props.id,
+        id: 'name' + props.$loki,
         onFocus: onClick,
         onChange: change('name'),
         defaultValue: props.name
@@ -189,17 +219,16 @@ function CustomCard(props) {
     [
       'input pv1 outline-0 b bg-transparent bn w-20 tr ' + color,
       {
-        id: 'timer' + props.id,
-        onChange: change('timer'),
+        id: 'timecost' + props.$loki,
+        onChange: change('timecost'),
         onFocus() {
+          console.log('focus')
           clearInterval(iInterval)
         },
-        defaultValue: props.timer
+        defaultValue: props.timecost
       }
     ]
   ])
 }
 
-export default { imap, nmap, action, view }
-// import { load } from '/src/ui'
-// load({ kmap,  action, view })
+export default { imap, nmap, action, view, open }

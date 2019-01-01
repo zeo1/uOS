@@ -40,8 +40,10 @@ onkeydown = e => {
   app.view()
 }
 
-let app
-export function load(component) {
+let app, last_app
+export function load(component, ...args) {
+  if (app) last_app = app
   app = component
+  if (app.open) app.open(...args)
   app.view()
 }

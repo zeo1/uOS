@@ -10,35 +10,65 @@ require('codemirror/theme/base16-dark.css')
 require('codemirror/addon/edit/continuelist')
 require('codemirror/addon/edit/closebrackets.js')
 require('codemirror/addon/selection/active-line.js')
+import load from '../data/load'
 
-let cm
-function view() {
-  render(
-    h('div pa3 h-100', [
-      'div shadow border-box h-100',
-      { width: '37em', margin: 'auto' },
-      ['textarea']
-    ]),
-    document.getElementById('root')
-  )
-  cm = CodeMirror.fromTextArea($('textarea'), {
-    mode: 'gfm',
-    keyMap: 'sublime',
-    theme: 'base16-dark',
-    lineWrapping: true,
-    autoCloseBrackets: true,
-    styleActiveLine: true,
-    indentWithTabs: false
-  })
-  cm.setOption('extraKeys', {
-    Enter: CodeMirror.commands.newlineAndIndentContinueMarkdownList,
-    Tab: CodeMirror.commands.indentMore,
-    'Ctrl-L': toggleUnorderedList
-  })
-  cm.on('change', e => {
-    // console.log(cm.getValue())
+export default {
+  view,
+  open,
+  nmap: {
+    i: ['focus']
+  },
+  action: {
+    focus() {
+      cm.focus()
+    }
+  }
+}
+
+let local, item, cm
+function view() {}
+function open(id) {
+  load(l => {
+    local = l
+    item = l.get(id)
+    function onChange() {
+      item.name = $('#name').value
+      local.update(item)
+    }
+    render(
+      h('div pa3 h-100', [
+        'div shadow border-box h-100',
+        { width: '37em', margin: 'auto' },
+        [
+          'input bg-transparent white b pa2',
+          { id: 'name', onChange, defaultValue: item.name }
+        ],
+        ['textarea', { defaultValue: item.notion }]
+      ]),
+      document.getElementById('root')
+    )
+    cm = CodeMirror.fromTextArea($('textarea'), {
+      mode: 'gfm',
+      keyMap: 'sublime',
+      theme: 'base16-dark',
+      lineWrapping: true,
+      autoCloseBrackets: true,
+      styleActiveLine: true,
+      indentWithTabs: false
+    })
+    cm.setOption('extraKeys', {
+      Enter: CodeMirror.commands.newlineAndIndentContinueMarkdownList,
+      Tab: CodeMirror.commands.indentMore,
+      Esc: e => document.activeElement.blur(),
+      'Cmd-U': toggleUnorderedList
+    })
+    cm.on('change', e => {
+      item.notion = cm.getValue()
+      local.update(item)
+    })
   })
 }
+
 function toggleUnorderedList() {
   let start = cm.getCursor('from')
   let end = cm.getCursor('to')
@@ -70,5 +100,3 @@ function toggleUnorderedList() {
     }
   }
 }
-
-export default { view }
