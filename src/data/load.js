@@ -22,9 +22,20 @@ function load_local() {
   if (callback) callback(local, db)
   // state.load('popup', Keymap, 'desktop')
   // ui.global_kmap = get_kmap('global')
+  window.local = local
 }
 
 let initData = [
+  {
+    name: new Date().toJSON().slice(0, 10),
+    tags: 'kanban',
+    notion: [
+      { title: 'Inbox', cards: [] },
+      { title: 'Next', cards: [] },
+      { title: 'Log', cards: [] },
+      { title: 'Review', cards: [] }
+    ]
+  },
   {
     name: 'desktop',
     tags: 'setting keymap',
