@@ -1,11 +1,12 @@
 import { each } from 'lodash'
 import { isa } from './util'
+import apps from './apps'
 
 let modAbbr = { acms: 'H', cms: 'A', ams: 'C', acs: 'M', acm: 'S' }
 let keyAbbr = {
   bsp: 8,
   tab: 9,
-  ret: 13,
+  ent: 13,
   esc: 27,
   spc: 32,
   lft: 37,
@@ -31,19 +32,40 @@ function event2abbr(e) {
 onkeydown = e => {
   let abbr = event2abbr(e)
   console.log(abbr)
-  let kmap = document.activeElement === document.body ? app.nmap : app.imap
-  if (!kmap || !app.action) return
-  let command = kmap[abbr]
-  if (!command || !isa(command)) return
-  e.preventDefault()
-  app.action[command[0]](...command.slice(1))
-  app.view()
+  action.key(abbr, e)
 }
 
-let app, last_app
-export function load(component, ...args) {
-  if (app) last_app = app
-  app = component
-  if (app.open) app.open(...args)
-  app.view()
+let app, lastApp
+let action = {
+  open(name, ...args) {
+    if (name === 'lastApp') {
+      let a = app
+      app = lastApp
+      lastApp = a
+    } else {
+      if (app) lastApp = app
+      app = apps[name]
+    }
+    if (app.open) app.open(...args)
+    app.view()
+  },
+  key(abbr, e) {
+    let kmap = document.activeElement === document.body ? app.nmap : app.imap
+    if (!kmap) return
+    let command = kmap[abbr]
+    if (!command || !isa(command)) return
+    if (e) e.preventDefault()
+    action.cmd(command)
+  },
+  cmd([name, ...args]) {
+    let cmd = app.action[name] || action[name]
+    if (!cmd) return
+    let r = cmd(...args)
+    if (isa(r)) ui(...r)
+    else app.view()
+  }
+}
+
+export default function ui(name, ...args) {
+  action[name](...args)
 }

@@ -11,16 +11,27 @@ import 'codemirror/addon/edit/continuelist'
 import 'codemirror/addon/edit/closebrackets.js'
 import 'codemirror/addon/selection/active-line.js'
 
+let cancelEscOnce = 0
+let action = {
+  focus() {
+    cm.focus()
+  },
+  blur(a, b) {
+    document.activeElement.blur()
+    cancelEscOnce = 1
+  },
+  open_last() {
+    if (cancelEscOnce === 1) cancelEscOnce = 0
+    else return ['open', 'lastApp']
+  }
+}
 export default {
   view,
   open,
+  action,
   nmap: {
-    i: ['focus']
-  },
-  action: {
-    focus() {
-      cm.focus()
-    }
+    i: ['focus'],
+    esc: ['open_last']
   }
 }
 
@@ -53,16 +64,19 @@ function open(id) {
       lineWrapping: true,
       autoCloseBrackets: true,
       styleActiveLine: true,
-      indentWithTabs: false
+      indentWithTabs: false,
+      autofocus: true
     })
     cm.setOption('extraKeys', {
       Enter: CodeMirror.commands.newlineAndIndentContinueMarkdownList,
       Tab: CodeMirror.commands.indentMore,
-      Esc: e => document.activeElement.blur(),
+      Esc: action.blur,
       'Cmd-U': toggleUnorderedList
     })
+    if (item.cursor) cm.setCursor(item.cursor)
     cm.on('change', e => {
       item.notion = cm.getValue()
+      item.cursor = cm.getCursor()
       local.update(item)
     })
   })

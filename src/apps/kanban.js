@@ -3,8 +3,14 @@ import { Board } from 'react-trello'
 import { h } from '../view'
 import { $ } from '../util'
 import load from '../data/load'
+import ui from '../ui'
 
-let lanes, local, kanban
+let lanes,
+  local,
+  kanban,
+  iInterval,
+  iLane = 0,
+  iCard = 0
 function open(id) {
   load(l => {
     local = l
@@ -12,6 +18,10 @@ function open(id) {
       name: new Date().toJSON().slice(0, 10),
       tags: 'kanban'
     })
+    if (kanban.iCard) {
+      iLane = kanban.iLane
+      iCard = kanban.iCard
+    }
     lanes = kanban.notion.map(({ title, cards }) => {
       return {
         title,
@@ -26,15 +36,18 @@ function open(id) {
     view()
   })
 }
-let iInterval,
-  iLane = 0,
-  iCard = 0
+function close() {
+  kanban.iCard = iCard
+  kanban.iLane = iLane
+  local.update(kanban)
+}
 let imap = {
   up: ['focus_up', 1],
   dn: ['focus_dn', 1],
   mup: ['focus_lft', 1],
   mdn: ['focus_rit', 1],
-  esc: ['blur']
+  esc: ['blur'],
+  ent: ['open_note']
 }
 let nmap = {
   a: ['add'],
@@ -51,6 +64,10 @@ let nmap = {
   rit: ['focus_rit']
 }
 let action = {
+  open_note() {
+    close()
+    ui('open', 'note', lanes[iLane].cards[iCard].$loki)
+  },
   blur() {
     document.activeElement.blur()
     clearInterval(iInterval)

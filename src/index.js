@@ -1,5 +1,4 @@
-import { load } from './ui'
-import kanban from './apps/kanban'
-import editor from './apps/editor'
-load(kanban)
-// load(editor, 2)
+import ui from './ui'
+
+ui('open', 'kanban')
+// open(editor, 2)
