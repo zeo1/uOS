@@ -1,10 +1,10 @@
 import loki from 'lokijs'
 
-let callback
+let callback, db
 export default function(f) {
   callback = f
   let lokiIndexedAdapter = new loki().getIndexedAdapter()
-  window.db = new loki('indexed.db', {
+  db = new loki('indexed.db', {
     autoload: true,
     autoloadCallback: load_local,
     autosave: true,
