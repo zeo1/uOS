@@ -1,5 +1,3 @@
-import './styles.css'
-
 import { createElement } from 'react'
 import { iss, isa, iso, c, each } from '../util'
 

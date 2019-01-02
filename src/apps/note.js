@@ -12,7 +12,7 @@ import 'codemirror/addon/edit/closebrackets.js'
 import 'codemirror/addon/selection/active-line.js'
 
 let cancelEscOnce = 0
-let card, cm, iInterval
+let card, cm, iInterval, lastApp
 let action = {
   focus() {
     cm.focus()
@@ -28,7 +28,8 @@ let action = {
     if (cancelEscOnce === 1) cancelEscOnce = 0
     else {
       clearInterval(iInterval)
-      return ['open', 'lastApp']
+      cm.toTextArea()
+      return ['open', ...lastApp]
     }
   }
 }
@@ -49,19 +50,13 @@ function startTimer() {
   clearInterval(iInterval)
   iInterval = setInterval(function() {
     $('#timecost').innerText = card.timecost = dur_inc_sec(card.timecost)
-    console.log('timer update')
     local.update(card)
   }, 1000)
 }
-function view() {}
-function open(id) {
-  console.log('open', card)
-  let card2 = local.findOne({ $loki: id })
-  card = local.get(id)
-  console.log(card.name, card2.name)
+function view() {
   function onChange() {
     card.name = $('#name').value
-    console.log('load update')
+    view()
     local.update(card)
   }
   render(
@@ -70,10 +65,9 @@ function open(id) {
       { width: '37em', margin: 'auto' },
       [
         'div flex',
-        {},
         [
           'input bg-transparent white b pa3 w-100',
-          { id: 'name', onChange, defaultValue: card.name }
+          { id: 'name', onChange, value: card.name }
         ],
         ['div red pa3', { id: 'timecost' }, card.timecost]
       ],
@@ -81,6 +75,12 @@ function open(id) {
     ]),
     document.getElementById('root')
   )
+}
+function open(id, last) {
+  lastApp = last
+  card = local.get(id)
+  console.log(card)
+  view()
   cm = CodeMirror.fromTextArea($('textarea'), {
     mode: 'gfm',
     keyMap: 'sublime',

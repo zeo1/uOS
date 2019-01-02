@@ -1,6 +1,6 @@
 import { render } from 'react-dom'
 import { Board } from 'react-trello'
-import { ui, h } from '../view'
+import { h } from '../view'
 import { $, dur_inc_sec } from '../util'
 import { local } from '../data/local'
 
@@ -77,7 +77,12 @@ let nmap = {
 let action = {
   open_note() {
     close()
-    ui('open', 'note', lanes[iLane].cards[iCard].$loki)
+    return [
+      'open',
+      'note',
+      lanes[iLane].cards[iCard].$loki,
+      ['kanban', kanban.name]
+    ]
   },
   blur() {
     document.activeElement.blur()
@@ -213,8 +218,6 @@ function CustomCard(props) {
       let card = find_card()
       card[key] = $('#' + key + props.$loki).value
       local.update(card)
-      console.log(card)
-      console.log(local.get(card.$loki))
       view()
     }
   }

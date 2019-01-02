@@ -8,7 +8,7 @@ body {
 }
 #root {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 16px;
+  font-size: 18px;
 }
 .shadow {
   box-shadow: 0 1px 5px 2px #000, inset 0 0 2px 0 hsla(0, 0%, 100%, 0.05);
@@ -26,6 +26,8 @@ body {
 input {
   border: 0;
   caret-color: red;
+  background: transparent;
+  box-sizing: border-box;
 }
 input:focus {
   outline: 0;
@@ -56,4 +58,17 @@ input:focus {
 .CodeMirror-line {
   padding: 2px !important;
   padding-left: 18px !important;
+}
+/* markdown */
+h1,
+h2 {
+  font-size: 20px;
+  margin: 10px 20px;
+}
+a {
+  color: #069;
+}
+p,
+pre {
+  padding-left: 30px;
 }

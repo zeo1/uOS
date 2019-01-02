@@ -1,5 +1,7 @@
 import u from 'lodash'
-import moment from 'moment'
+import { render } from 'react-dom'
+import { h } from './view'
+import { local } from './data/local'
 
 let c = console.log,
   $ = document.querySelector.bind(document),
@@ -8,6 +10,21 @@ let c = console.log,
   iss = u.isString,
   isf = u.isFunction,
   each = u.each
+
+export {
+  h,
+  render,
+  local,
+  c,
+  $,
+  isa,
+  iso,
+  iss,
+  isf,
+  each,
+  dur_inc_sec,
+  fuzzy_search
+}
 
 function dur_inc_sec(sTime, seconds) {
   let iTime = +sTime
@@ -21,5 +38,10 @@ function dur_inc_sec(sTime, seconds) {
   let min = Math.floor(iTime / 60)
   return min + ':' + sec
 }
-
-export { c, $, isa, iso, iss, isf, each, dur_inc_sec }
+function fuzzy_search(s, str) {
+  let i = 0,
+    n = -1,
+    l
+  for (; (l = s[i++]); ) if (!~(n = str.indexOf(l, n + 1))) return false
+  return true
+}

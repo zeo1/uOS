@@ -1,4 +1,4 @@
-import { isa, each } from '../util'
+import { isa, each, render, $ } from '../util'
 import apps from '../apps'
 
 let modAbbr = { acms: 'H', cms: 'A', ams: 'C', acs: 'M', acm: 'S' }
@@ -34,19 +34,20 @@ onkeydown = e => {
   action.key(abbr, e)
 }
 
-let app, lastApp
+let app, lastApp, currentApp
 let action = {
   open(name, ...args) {
-    if (name === 'lastApp') {
-      let a = app
-      app = lastApp
-      lastApp = a
+    if (name !== 'lastApp') {
+      lastApp = currentApp
+      currentApp = [name, args]
     } else {
-      if (app) lastApp = app
-      app = apps[name]
+      var [name, args] = lastApp
+      let a = currentApp
+      currentApp = lastApp
+      lastApp = a
     }
+    app = apps[name]
     if (app.open) app.open(...args)
-    app.view()
   },
   key(abbr, e) {
     let kmap = document.activeElement === document.body ? app.nmap : app.imap
@@ -61,7 +62,8 @@ let action = {
     if (!cmd) return
     let r = cmd(...args)
     if (isa(r)) ui(...r)
-    else app.view()
+    else r = app.view()
+    if (r.props && r._store) render(r, $('#root'))
   }
 }
 
