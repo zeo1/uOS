@@ -63,7 +63,7 @@ let action = {
     let r = cmd(...args)
     if (isa(r)) ui(...r)
     else r = app.view()
-    if (r.props && r._store) render(r, $('#root'))
+    if (r && r.props && r._store) render(r, $('#root'))
   }
 }
 

@@ -9,6 +9,7 @@
     "lodash": "4.17.11",
     "lokijs": "1.5.5",
     "marked": "latest",
+    "moment": "2.23.0",
     "react": "16.7.0",
     "react-dom": "16.7.0",
     "react-scripts": "2.1.2",

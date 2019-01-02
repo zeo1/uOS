@@ -1,24 +1,22 @@
-import { render } from 'react-dom'
 import { Board } from 'react-trello'
-import { h } from '../view'
-import { $, dur_inc_sec } from '../util'
-import { local } from '../data/local'
+import { local, render, h, $, dur_inc_sec, moment } from '../util'
 
 let lanes,
   kanban,
   iInterval,
   iLane = 0,
   iCard = 0,
-  lastApp
-function open(id, last) {
-  lastApp = last
+  lastApp,
+  date
+function open(date, last) {
+  if (last) lastApp = last
   kanban = local.findOne({
-    name: new Date().toJSON().slice(0, 10),
+    name: date,
     tags: 'kanban'
   })
   if (!kanban) {
     kanban = {
-      name: new Date().toJSON().slice(0, 10),
+      name: date,
       tags: 'kanban',
       notion: [
         { title: 'Inbox', cards: [] },
@@ -75,11 +73,24 @@ let nmap = {
   dn: ['focus_dn'],
   lft: ['focus_lft'],
   rit: ['focus_rit'],
-  esc: ['open_last']
+  esc: ['open_last'],
+  x: ['last_day'],
+  c: ['next_day']
 }
 let action = {
+  next_day() {
+    let next = moment(kanban.name)
+      .add(1, 'd')
+      .format('Y-MM-DD')
+    return ['open', 'kanban', next]
+  },
+  last_day() {
+    let last = moment(kanban.name)
+      .subtract(1, 'd')
+      .format('Y-MM-DD')
+    return ['open', 'kanban', last]
+  },
   open_last() {
-    clearInterval(iInterval)
     return ['open', ...lastApp]
   },
   open_note() {
@@ -197,17 +208,21 @@ function view(focus) {
   if (!lanes) return
   render(
     h(
-      Board,
-      {
-        onDataChange: action.save,
-        data: { lanes },
-        backgroundColor: 'transparent',
-        width: 1290,
-        margin: 'auto',
-        draggable: true,
-        customCardLayout: true
-      },
-      [CustomCard]
+      'div flex flex-column justify-between h-100',
+      [
+        Board,
+        {
+          onDataChange: action.save,
+          data: { lanes },
+          backgroundColor: 'transparent',
+          width: '100%',
+          margin: 'auto',
+          cardDraggable: true,
+          customCardLayout: true
+        },
+        [CustomCard]
+      ],
+      ['div gray center pa2 b', moment(kanban.name).format('Y-MM-DD ddd')]
     ),
     $('#root')
   )
@@ -239,9 +254,9 @@ function CustomCard(props) {
   }
   let color = isSelect() ? 'red' : 'moon-gray'
   return h('div bg-near-black w-100', [
-    'header flex justify-between',
+    'header flex',
     [
-      'input pv1 outline-0 moon-gray b bg-transparent bn w-100',
+      'input pv1 outline-0 moon-gray b bg-transparent bn',
       {
         id: 'name' + props.$loki,
         onFocus: onClick,
@@ -250,7 +265,7 @@ function CustomCard(props) {
       }
     ],
     [
-      'input pv1 outline-0 b bg-transparent bn w-20 tr ' + color,
+      'input pv1 outline-0 b bg-transparent bn tr w-100 ' + color,
       {
         id: 'timecost' + props.$loki,
         onChange: change('timecost'),

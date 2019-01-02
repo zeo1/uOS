@@ -2,6 +2,7 @@ import u from 'lodash'
 import { render } from 'react-dom'
 import { h } from './view'
 import { local } from './data/local'
+import moment from 'moment'
 
 let c = console.log,
   $ = document.querySelector.bind(document),
@@ -12,6 +13,7 @@ let c = console.log,
   each = u.each
 
 export {
+  moment,
   h,
   render,
   local,
