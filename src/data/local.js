@@ -1,25 +1,28 @@
 import loki from 'lokijs'
 
-let callback, db
-export default function(f) {
+let callback, db, local
+function onload_db(f) {
   callback = f
-  let lokiIndexedAdapter = new loki().getIndexedAdapter()
-  db = new loki('indexed.db', {
-    autoload: true,
-    autoloadCallback: load_local,
-    autosave: true,
-    autosaveInterval: 1000,
-    adapter: new lokiIndexedAdapter('b')
-  })
 }
+export { db, onload_db, local }
+
+let lokiIndexedAdapter = new loki().getIndexedAdapter()
+db = new loki('indexed.db', {
+  autoload: true,
+  autoloadCallback: load_local,
+  autosave: true,
+  autosaveInterval: 1000,
+  adapter: new lokiIndexedAdapter('b')
+})
+
 function load_local() {
-  let local = db.getCollection('text')
+  local = db.getCollection('text')
   if (local === null) {
     console.log('create db with initData')
     local = db.addCollection('text')
     local.insert(initData)
   }
-  if (callback) callback(local, db)
+  if (callback) callback()
   // state.load('popup', Keymap, 'desktop')
   // ui.global_kmap = get_kmap('global')
   window.local = local

@@ -1,4 +1,5 @@
 import { ui } from './view'
+import { onload_db } from './data/local'
 
-ui('open', 'kanban')
+onload_db(e => ui('open', 'kanban'))
 // open(editor, 2)

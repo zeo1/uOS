@@ -1,57 +1,55 @@
 import { render } from 'react-dom'
 import { Board } from 'react-trello'
 import { ui, h } from '../view'
-import { $ } from '../util'
-import load from '../data/load'
+import { $, dur_inc_sec } from '../util'
+import { local } from '../data/local'
 
 let lanes,
-  local,
   kanban,
   iInterval,
   iLane = 0,
   iCard = 0
 function open(id) {
-  load(l => {
-    local = l
-    kanban = l.findOne({
-      name: new Date().toJSON().slice(0, 10),
-      tags: 'kanban'
-    })
-    if (!kanban) {
-      kanban = {
-        name: new Date().toJSON().slice(0, 10),
-        tags: 'kanban',
-        notion: [
-          { title: 'Inbox', cards: [] },
-          { title: 'Next', cards: [] },
-          { title: 'Log', cards: [] },
-          { title: 'Review', cards: [] }
-        ]
-      }
-      l.insert(kanban)
-    }
-    if (kanban.iCard) {
-      iLane = kanban.iLane
-      iCard = kanban.iCard
-    }
-    lanes = kanban.notion.map(({ title, cards }) => {
-      return {
-        title,
-        id: title,
-        cards: cards.map(c => {
-          let r = l.get(c)
-          r.id = r.$loki + ''
-          return r
-        })
-      }
-    })
-    view()
+  kanban = local.findOne({
+    name: new Date().toJSON().slice(0, 10),
+    tags: 'kanban'
   })
+  if (!kanban) {
+    kanban = {
+      name: new Date().toJSON().slice(0, 10),
+      tags: 'kanban',
+      notion: [
+        { title: 'Inbox', cards: [] },
+        { title: 'Next', cards: [] },
+        { title: 'Log', cards: [] },
+        { title: 'Review', cards: [] }
+      ]
+    }
+    local.insert(kanban)
+  }
+  if (kanban.iCard) {
+    iLane = kanban.iLane
+    iCard = kanban.iCard
+  }
+  lanes = kanban.notion.map(({ title, cards }) => {
+    return {
+      title,
+      id: title,
+      cards: cards.map(c => {
+        let r = local.get(c)
+        r.id = r.$loki + ''
+        return r
+      })
+    }
+  })
+  view(kanban.iCard)
 }
 function close() {
+  clearInterval(iInterval)
   kanban.iCard = iCard
   kanban.iLane = iLane
   local.update(kanban)
+  debugger
 }
 let imap = {
   up: ['focus_up', 1],
@@ -167,20 +165,12 @@ let action = {
     }))
   },
   startTimer() {
-    let card = lanes[iLane].cards[iCard]
-    if (card.timecost) {
-      let [min, sec] = card.timecost.split(':')
-      var time = min * 60 + sec * 1
-    } else {
-      var time = 0
-    }
     clearInterval(iInterval)
-    if (isNaN(time) || time > 60 * 999) return
+    let card = lanes[iLane].cards[iCard]
     iInterval = setInterval(function() {
-      time++
-      let sec = ('0' + (time % 60)).slice(-2)
-      let min = Math.floor(time / 60)
-      $('#timecost' + card.$loki).value = card.timecost = min + ':' + sec
+      $('#timecost' + card.$loki).value = card.timecost = dur_inc_sec(
+        card.timecost
+      )
       local.update(card)
     }, 1000)
   }
@@ -222,6 +212,9 @@ function CustomCard(props) {
       let card = find_card()
       card[key] = $('#' + key + props.$loki).value
       local.update(card)
+      console.log(card)
+      console.log(local.get(card.$loki))
+      view()
     }
   }
   function onClick() {
@@ -242,7 +235,7 @@ function CustomCard(props) {
         id: 'name' + props.$loki,
         onFocus: onClick,
         onChange: change('name'),
-        defaultValue: props.name
+        value: props.name
       }
     ],
     [
@@ -251,10 +244,9 @@ function CustomCard(props) {
         id: 'timecost' + props.$loki,
         onChange: change('timecost'),
         onFocus() {
-          console.log('focus')
           clearInterval(iInterval)
         },
-        defaultValue: props.timecost
+        value: props.timecost
       }
     ]
   ])

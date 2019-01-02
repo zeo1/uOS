@@ -1,7 +1,7 @@
 import { render } from 'react-dom'
 import { h } from '../view'
-import { $ } from '../util'
-import load from '../data/load'
+import { $, dur_inc_sec } from '../util'
+import { local } from '../data/local'
 import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/gfm/gfm'
@@ -16,13 +16,17 @@ let action = {
   focus() {
     cm.focus()
   },
-  blur(a, b) {
+  blur() {
     document.activeElement.blur()
     cancelEscOnce = 1
+    clearInterval(iInterval)
   },
   open_last() {
     if (cancelEscOnce === 1) cancelEscOnce = 0
-    else return ['open', 'lastApp']
+    else {
+      clearInterval(iInterval)
+      return ['open', 'lastApp']
+    }
   }
 }
 export default {
@@ -32,54 +36,75 @@ export default {
   nmap: {
     i: ['focus'],
     esc: ['open_last']
+  },
+  imap: {
+    esc: ['blur']
   }
 }
 
-let local, item, cm
+let card, cm, iInterval
+
+function startTimer() {
+  console.log('timer:', card.name)
+  clearInterval(iInterval)
+  iInterval = setInterval(function() {
+    $('#timecost').innerText = card.timecost = dur_inc_sec(card.timecost)
+    console.log('timer update')
+    local.update(card)
+  }, 1000)
+}
 function view() {}
 function open(id) {
-  load(l => {
-    local = l
-    item = l.get(id)
-    function onChange() {
-      item.name = $('#name').value
-      local.update(item)
-    }
-    render(
-      h('div pa3 h-100', [
-        'div shadow border-box h-100',
-        { width: '37em', margin: 'auto' },
+  console.log('open', card)
+  let card2 = local.findOne({ $loki: id })
+  card = local.get(id)
+  console.log(card.name, card2.name)
+  function onChange() {
+    card.name = $('#name').value
+    console.log('load update')
+    local.update(card)
+  }
+  render(
+    h('div pa3 h-100', [
+      'div shadow border-box h-100 relative flex flex-column',
+      { width: '37em', margin: 'auto' },
+      [
+        'div flex',
+        {},
         [
           'input bg-transparent white b pa2 w-100',
-          { id: 'name', onChange, defaultValue: item.name }
+          { id: 'name', onChange, defaultValue: card.name }
         ],
-        ['textarea', { defaultValue: item.notion }]
-      ]),
-      document.getElementById('root')
-    )
-    cm = CodeMirror.fromTextArea($('textarea'), {
-      mode: 'gfm',
-      keyMap: 'sublime',
-      theme: 'base16-dark',
-      lineWrapping: true,
-      autoCloseBrackets: true,
-      styleActiveLine: true,
-      indentWithTabs: false,
-      autofocus: true
-    })
-    cm.setOption('extraKeys', {
-      Enter: CodeMirror.commands.newlineAndIndentContinueMarkdownList,
-      Tab: CodeMirror.commands.indentMore,
-      Esc: action.blur,
-      'Cmd-U': toggleUnorderedList
-    })
-    if (item.cursor) cm.setCursor(item.cursor)
-    cm.on('change', e => {
-      item.notion = cm.getValue()
-      item.cursor = cm.getCursor()
-      local.update(item)
-    })
+        ['div red pa2', { id: 'timecost' }, card.timecost]
+      ],
+      ['textarea', { defaultValue: card.notion }]
+    ]),
+    document.getElementById('root')
+  )
+  cm = CodeMirror.fromTextArea($('textarea'), {
+    mode: 'gfm',
+    keyMap: 'sublime',
+    theme: 'base16-dark',
+    lineWrapping: true,
+    autoCloseBrackets: true,
+    styleActiveLine: true,
+    indentWithTabs: false,
+    autofocus: true
   })
+  cm.setOption('extraKeys', {
+    Enter: CodeMirror.commands.newlineAndIndentContinueMarkdownList,
+    Tab: CodeMirror.commands.indentMore,
+    Esc: action.blur,
+    'Cmd-U': toggleUnorderedList
+  })
+  if (card.cursor) cm.setCursor(card.cursor)
+  cm.on('change', e => {
+    card.notion = cm.getValue()
+    card.cursor = cm.getCursor()
+    console.log('on change update')
+    local.update(card)
+  })
+  cm.on('focus', startTimer)
 }
 
 function toggleUnorderedList() {
