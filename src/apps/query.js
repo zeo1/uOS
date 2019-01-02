@@ -9,7 +9,9 @@ let action = {
     if (s.select < s.list.length - 1) s.select++
   },
   open() {
-    return ['open', 'note', s.list[s.select].$loki, ['query', s.query]]
+    let card = s.list[s.select]
+    let name = card.tags.indexOf('kanban') === -1 ? 'note' : 'kanban'
+    return ['open', name, s.list[s.select].$loki, ['query', s.query]]
   },
   create() {
     let c = local.insert({
@@ -57,7 +59,6 @@ function view() {
     let n = local.get(s.list[s.select].$loki).notion
     preview = iss(n) ? marked(n) : `<pre>${JSON.stringify(n, null, 2)}</pre>`
   }
-  console.log('mk')
   render(
     h('div pa3 h-100', [
       'div flex white center shadow h-100',

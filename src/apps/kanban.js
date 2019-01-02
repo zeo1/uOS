@@ -8,8 +8,10 @@ let lanes,
   kanban,
   iInterval,
   iLane = 0,
-  iCard = 0
-function open(id) {
+  iCard = 0,
+  lastApp
+function open(id, last) {
+  lastApp = last
   kanban = local.findOne({
     name: new Date().toJSON().slice(0, 10),
     tags: 'kanban'
@@ -72,9 +74,14 @@ let nmap = {
   up: ['focus_up'],
   dn: ['focus_dn'],
   lft: ['focus_lft'],
-  rit: ['focus_rit']
+  rit: ['focus_rit'],
+  esc: ['open_last']
 }
 let action = {
+  open_last() {
+    clearInterval(iInterval)
+    return ['open', ...lastApp]
+  },
   open_note() {
     close()
     return [

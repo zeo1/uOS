@@ -54,10 +54,12 @@ function startTimer() {
   }, 1000)
 }
 function view() {
-  function onChange() {
-    card.name = $('#name').value
-    view()
-    local.update(card)
+  function change(key) {
+    return e => {
+      card[key] = $('#' + key).value
+      view()
+      local.update(card)
+    }
   }
   render(
     h('div pa3 h-100', [
@@ -66,12 +68,16 @@ function view() {
       [
         'div flex',
         [
-          'input bg-transparent white b pa3 w-100',
-          { id: 'name', onChange, value: card.name }
+          'input white b pa3 w-100',
+          { id: 'name', onChange: change('name'), value: card.name }
         ],
         ['div red pa3', { id: 'timecost' }, card.timecost]
       ],
-      ['textarea', { defaultValue: card.notion }]
+      ['textarea', { defaultValue: card.notion }],
+      [
+        'input white b pa3 w-100',
+        { id: 'tags', value: card.tags, onChange: change('tags') }
+      ]
     ]),
     document.getElementById('root')
   )
