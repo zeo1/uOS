@@ -72,10 +72,10 @@ function open(id) {
         'div flex',
         {},
         [
-          'input bg-transparent white b pa2 w-100',
+          'input bg-transparent white b pa3 w-100',
           { id: 'name', onChange, defaultValue: card.name }
         ],
-        ['div red pa2', { id: 'timecost' }, card.timecost]
+        ['div red pa3', { id: 'timecost' }, card.timecost]
       ],
       ['textarea', { defaultValue: card.notion }]
     ]),

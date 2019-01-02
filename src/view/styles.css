@@ -54,5 +54,6 @@ input:focus {
   padding: 0 !important;
 }
 .CodeMirror-line {
-  padding-left: 8px !important;
+  padding: 2px !important;
+  padding-left: 18px !important;
 }
