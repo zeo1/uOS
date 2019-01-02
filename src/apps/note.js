@@ -12,6 +12,7 @@ import 'codemirror/addon/edit/closebrackets.js'
 import 'codemirror/addon/selection/active-line.js'
 
 let cancelEscOnce = 0
+let card, cm, iInterval
 let action = {
   focus() {
     cm.focus()
@@ -20,6 +21,8 @@ let action = {
     document.activeElement.blur()
     cancelEscOnce = 1
     clearInterval(iInterval)
+    card.cursor = cm.getCursor()
+    local.update(card)
   },
   open_last() {
     if (cancelEscOnce === 1) cancelEscOnce = 0
@@ -41,9 +44,6 @@ export default {
     esc: ['blur']
   }
 }
-
-let card, cm, iInterval
-
 function startTimer() {
   console.log('timer:', card.name)
   clearInterval(iInterval)
@@ -101,7 +101,6 @@ function open(id) {
   cm.on('change', e => {
     card.notion = cm.getValue()
     card.cursor = cm.getCursor()
-    console.log('on change update')
     local.update(card)
   })
   cm.on('focus', startTimer)
