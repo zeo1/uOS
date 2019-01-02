@@ -60,6 +60,7 @@ let imap = {
   ent: ['open_note']
 }
 let nmap = {
+  ent: ['open_note'],
   a: ['add'],
   r: ['rm'],
   s: ['mv_lft'],
