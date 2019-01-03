@@ -61,6 +61,8 @@ let action = {
       kmap = document.activeElement === document.body ? app.nmap : app.imap
     if (!kmap) return console.log('no kmap')
     let command = kmap[abbr] || global_kmap[abbr]
+    kmap = 0
+    render(h('div'), $('#l'))
     if (!command || !isa(command)) return
     if (e) e.preventDefault()
     action.cmd(command)
@@ -68,8 +70,6 @@ let action = {
   cmd([name, ...args]) {
     let cmd = app.action[name] || action[name]
     if (!cmd) return console.log('no cmd: ', name)
-    kmap = 0
-    render(h('div'), $('#l'))
     let r = cmd(...args)
     if (isa(r)) ui(...r)
     else r = app.view()

@@ -10,7 +10,6 @@ let lanes,
   date
 function open(date, last) {
   if (iss(date)) {
-    console.log('n')
     kanban = local.findOne({
       name: date,
       tags: 'kanban'
@@ -29,7 +28,6 @@ function open(date, last) {
       local.insert(kanban)
     }
   } else if (isi(date)) {
-    console.log('nmb')
     kanban = local.findOne({ $loki: date })
   } else return console.log('date is not string or id: ', date)
 
@@ -56,7 +54,6 @@ function close() {
   kanban.iCard = iCard
   kanban.iLane = iLane
   local.update(kanban)
-  debugger
 }
 let imap = {
   up: ['focus_up', 1],
@@ -272,7 +269,7 @@ function CustomCard(props) {
       }
     ],
     [
-      'input pv1 outline-0 b bg-transparent bn tr w-100 ' + color,
+      'input pv1 outline-0 b bg-transparent bn tr w3 ' + color,
       {
         id: 'timecost' + props.$loki,
         onChange: change('timecost'),

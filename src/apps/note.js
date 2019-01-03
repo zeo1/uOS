@@ -70,7 +70,7 @@ function view() {
           'input white b pa3 w-100',
           { id: 'name', onChange: change('name'), value: card.name }
         ],
-        ['div red pa3', { id: 'timecost' }, card.timecost]
+        ['div red pa2', { id: 'timecost' }, card.timecost]
       ],
       ['textarea', { defaultValue: card.notion }],
       [
