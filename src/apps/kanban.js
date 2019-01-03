@@ -1,5 +1,5 @@
 import { Board } from 'react-trello'
-import { local, render, h, $, dur_inc_sec, moment } from '../util'
+import { isi, iss, local, render, h, $, dur_inc_sec, moment } from '../util'
 
 let lanes,
   kanban,
@@ -9,24 +9,31 @@ let lanes,
   lastApp,
   date
 function open(date, last) {
-  if (last) lastApp = last
-  kanban = local.findOne({
-    name: date,
-    tags: 'kanban'
-  })
-  if (!kanban) {
-    kanban = {
+  if (iss(date)) {
+    console.log('n')
+    kanban = local.findOne({
       name: date,
-      tags: 'kanban',
-      notion: [
-        { title: 'Inbox', cards: [] },
-        { title: 'Next', cards: [] },
-        { title: 'Log', cards: [] },
-        { title: 'Review', cards: [] }
-      ]
+      tags: 'kanban'
+    })
+    if (!kanban) {
+      kanban = {
+        name: date,
+        tags: 'kanban',
+        notion: [
+          { title: 'Inbox', cards: [] },
+          { title: 'Next', cards: [] },
+          { title: 'Log', cards: [] },
+          { title: 'Review', cards: [] }
+        ]
+      }
+      local.insert(kanban)
     }
-    local.insert(kanban)
-  }
+  } else if (isi(date)) {
+    console.log('nmb')
+    kanban = local.findOne({ $loki: date })
+  } else return console.log('date is not string or id: ', date)
+
+  if (last) lastApp = last
   if (kanban.iCard) {
     iLane = kanban.iLane
     iCard = kanban.iCard
@@ -224,7 +231,7 @@ function view(focus) {
       ],
       ['div gray center pa2 b', moment(kanban.name).format('Y-MM-DD ddd')]
     ),
-    $('#root')
+    $('#r')
   )
   if (focus) focus_curent_card()
   action.save()

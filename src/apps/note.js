@@ -46,7 +46,6 @@ export default {
   }
 }
 function startTimer() {
-  console.log('timer:', card.name)
   clearInterval(iInterval)
   iInterval = setInterval(function() {
     $('#timecost').innerText = card.timecost = dur_inc_sec(card.timecost)
@@ -79,7 +78,7 @@ function view() {
         { id: 'tags', value: card.tags, onChange: change('tags') }
       ]
     ]),
-    document.getElementById('root')
+    document.getElementById('r')
   )
 }
 function open(id, last) {

@@ -1,69 +1,86 @@
-import { isa, each, render, $ } from '../util'
+import { isa, each, map, h, render, $, parse } from '../util'
 import apps from '../apps'
 
-let modAbbr = { acms: 'H', cms: 'A', ams: 'C', acs: 'M', acm: 'S' }
-let keyAbbr = {
-  bsp: 8,
-  tab: 9,
-  ent: 13,
-  esc: 27,
-  spc: 32,
-  lft: 37,
-  up: 38,
-  rit: 39,
-  dn: 40,
-  del: 46,
-  hom: 36,
-  end: 35,
-  pup: 33,
-  pdn: 34
-}
-each(keyAbbr, (val, key) => (keyAbbr[val] = key))
-function event2abbr(e) {
-  let abbr = ''
-  if (e.altKey) abbr += 'a'
-  if (e.ctrlKey) abbr += 'c'
-  if (e.metaKey) abbr += 'm'
-  if (e.shiftKey) abbr += 's'
-  return (modAbbr[abbr] || abbr) + (keyAbbr[e.which] || e.key.toLowerCase())
-}
+render(
+  h('div h-100', ['div h-100 fl', { id: 'l' }], ['div h-100', { id: 'r' }]),
+  $('#root')
+)
 
-onkeydown = e => {
-  let abbr = event2abbr(e)
-  console.log(abbr)
-  action.key(abbr, e)
-}
+let sKeymap = `
+m q keymap::
+t d today
+k q kanban::
+q q
+b q b
+`
 
-let app, lastApp, currentApp
+let app,
+  lastOpen,
+  currentOpen,
+  kmap,
+  global_kmap = parse.keymap(sKeymap)
+
 let action = {
   open(name, ...args) {
     if (name !== 'lastApp') {
-      lastApp = currentApp
-      currentApp = [name, args]
+      lastOpen = currentOpen
+      currentOpen = [name, args]
     } else {
-      var [name, args] = lastApp
-      let a = currentApp
-      currentApp = lastApp
-      lastApp = a
+      var [name, args] = lastOpen
+      let a = currentOpen
+      currentOpen = lastOpen
+      lastOpen = a
     }
     app = apps[name]
     if (app.open) app.open(...args)
   },
+  kmap(km) {
+    kmap = km
+    render(
+      h('div flex flex-column justify-center h-100', [
+        'table pa2 bg-dark-gray',
+        [
+          'tbody',
+          { fontFamily: 'monaco' },
+          ...map(kmap, (val, key) => [
+            'tr',
+            ['td red pa1 tr', key],
+            [
+              'td pa1 mw5 nowrap overflow-hidden',
+              { title: val.join(' ') },
+              val.join(' ')
+            ]
+          ])
+        ]
+      ]),
+      $('#l')
+    )
+  },
   key(abbr, e) {
-    let kmap = document.activeElement === document.body ? app.nmap : app.imap
-    if (!kmap) return
-    let command = kmap[abbr]
+    if (!kmap)
+      kmap = document.activeElement === document.body ? app.nmap : app.imap
+    if (!kmap) return console.log('no kmap')
+    let command = kmap[abbr] || global_kmap[abbr]
     if (!command || !isa(command)) return
     if (e) e.preventDefault()
     action.cmd(command)
   },
   cmd([name, ...args]) {
     let cmd = app.action[name] || action[name]
-    if (!cmd) return
+    if (!cmd) return console.log('no cmd: ', name)
+    kmap = 0
+    render(h('div'), $('#l'))
     let r = cmd(...args)
     if (isa(r)) ui(...r)
     else r = app.view()
-    if (r && r.props && r._store) render(r, $('#root'))
+    if (r && r.props && r._store) render(r, $('#r'))
+  },
+  q(query) {
+    return ['open', 'query', query || '']
+  },
+  d(date) {
+    if (date === 'today') date = new Date().toJSON().slice(0, 10)
+    return ['open', kanban, date]
   }
 }
 

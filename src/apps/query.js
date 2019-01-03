@@ -47,7 +47,7 @@ function open(sQuery) {
     s.tagsQuery = sQuery.slice(0, i).split(' ')
   }
   s.list = local
-    .where(c => s.tagsQuery.every(tag => c.tags.indexOf(tag) != -1))
+    .where(c => s.tagsQuery.every(tag => c.tags && c.tags.indexOf(tag) != -1))
     .filter(v => fuzzy_search(s.nameQuery, v.name))
   console.log(s)
   view()
@@ -76,7 +76,7 @@ function view() {
       ],
       ['div overflow-scroll pa3', { width: 700, id: 'preview' }]
     ]),
-    $('#root')
+    $('#r')
   )
   $('#preview').innerHTML = preview
 }

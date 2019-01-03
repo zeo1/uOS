@@ -13,8 +13,11 @@ export default function h(tag, props, ...children) {
   }
   props.className = props.class || ''
   if (iss(tag)) {
-    props.className += tag.substr(tag.indexOf(' ') + 1)
-    tag = tag.replace(/ .*/, '')
+    let i = tag.indexOf(' ')
+    if (i >= 0) {
+      props.className += tag.substr(i + 1)
+      tag = tag.replace(/ .*/, '')
+    }
   }
   each(children, (child, i) => {
     if (isa(child)) children[i] = h(...child)

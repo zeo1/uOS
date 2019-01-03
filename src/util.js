@@ -2,6 +2,7 @@ import u from 'lodash'
 import { render } from 'react-dom'
 import { h } from './view'
 import { local } from './data/local'
+import parse from './data/parse'
 import moment from 'moment'
 
 let c = console.log,
@@ -10,20 +11,25 @@ let c = console.log,
   iso = u.isPlainObject,
   iss = u.isString,
   isf = u.isFunction,
-  each = u.each
+  isi = u.isInteger,
+  each = u.each,
+  map = u.map
 
 export {
   moment,
   h,
   render,
   local,
+  parse,
   c,
   $,
   isa,
   iso,
   iss,
   isf,
+  isi,
   each,
+  map,
   dur_inc_sec,
   fuzzy_search
 }
