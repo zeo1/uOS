@@ -66,9 +66,9 @@ let action = {
   q(query) {
     return ['open', 'query', query || '']
   },
-  d(date) {
+  k(date) {
     if (date === 'today') date = new Date().toJSON().slice(0, 10)
-    return ['open', kanban, date]
+    return ['open', 'kanban', date]
   }
 }
 
