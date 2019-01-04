@@ -1,4 +1,4 @@
-import { isa, each, map, h, render, $, parse } from '../util'
+import { isa, each, map, h, render, $, keymaps } from '../util'
 import apps from '../apps'
 
 render(
@@ -6,20 +6,7 @@ render(
   $('#root')
 )
 
-let sKeymap = `
-m q keymap::
-t d today
-k q kanban::
-q q
-b q b
-`
-
-let app,
-  lastOpen,
-  currentOpen,
-  kmap,
-  global_kmap = parse.keymap(sKeymap)
-
+let app, lastOpen, currentOpen, kmap
 let action = {
   open(name, ...args) {
     if (name !== 'lastApp') {
@@ -34,8 +21,8 @@ let action = {
     app = apps[name]
     if (app.open) app.open(...args)
   },
-  kmap(km) {
-    kmap = km
+  kmap(name) {
+    kmap = keymaps[name]
     render(
       h('div flex flex-column justify-center h-100', [
         'table pa2 bg-dark-gray',
@@ -60,7 +47,7 @@ let action = {
     if (!kmap)
       kmap = document.activeElement === document.body ? app.nmap : app.imap
     if (!kmap) return console.log('no kmap')
-    let command = kmap[abbr] || global_kmap[abbr]
+    let command = kmap[abbr] || keymaps.global[abbr]
     kmap = 0
     render(h('div'), $('#l'))
     if (!command || !isa(command)) return

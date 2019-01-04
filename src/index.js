@@ -1,8 +1,7 @@
 import { ui } from './view'
-import { onload_db } from './data/local'
+import { onload_db, keymaps } from './data/local'
 
-onload_db(e => {
+onload_db(l => {
   ui('open', 'kanban', new Date().toJSON().slice(0, 10))
-  ui('kmap', { a: ['stes'] })
   // ui('open', 'query', 't')
 })

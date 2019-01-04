@@ -1,10 +1,11 @@
 import loki from 'lokijs'
-
-let callback, db, local
+import load_keymaps from './load_keymaps'
+import reset from './reset'
+let callback, db, local, keymaps
 function onload_db(f) {
   callback = f
 }
-export { db, onload_db, local }
+export { db, onload_db, local, keymaps }
 
 let lokiIndexedAdapter = new loki().getIndexedAdapter()
 db = new loki('indexed.db', {
@@ -17,49 +18,12 @@ db = new loki('indexed.db', {
 
 function load_local() {
   local = db.getCollection('text')
-  if (local === null) {
-    console.log('create db with initData')
+  reset(local)
+  if (local === null || !local.data.length) {
     local = db.addCollection('text')
-    local.insert(initData)
+    reset(local)
   }
-  if (callback) callback()
-  // state.load('popup', Keymap, 'desktop')
-  // ui.global_kmap = get_kmap('global')
+  keymaps = load_keymaps(local)
+  if (callback) callback(local)
   window.local = local
 }
-
-let initData = [
-  {
-    name: 'desktop',
-    tags: 'setting keymap',
-    notion: ['m viewer meta', 't viewer task', 'k viewer setting']
-  },
-  {
-    name: 'global',
-    tags: 'setting keymap',
-    notion: ['ac1 popkey desktop']
-  },
-  {
-    name: 'edtior nmap',
-    tags: 'setting keymap',
-    notion: [
-      'i set_lane idea',
-      'd set_lane design',
-      't set_lane todo',
-      'b set_lane beta',
-      's set_lane stable',
-      'p set_lane problem',
-      'a set_lane archive'
-    ]
-  },
-  {
-    name: 'editor nmap',
-    tags: 'setting keymap',
-    notion: ['ret add_dn', 'tab form name', 'esc switch_status']
-  },
-  {
-    name: 'viewer imap',
-    tags: 'setting keymap',
-    notion: ['ret open', 'tab create']
-  }
-]

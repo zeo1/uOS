@@ -36,14 +36,7 @@ let action = {
 export default {
   view,
   open,
-  action,
-  nmap: {
-    i: ['focus'],
-    esc: ['open_last']
-  },
-  imap: {
-    esc: ['blur']
-  }
+  action
 }
 function startTimer() {
   clearInterval(iInterval)

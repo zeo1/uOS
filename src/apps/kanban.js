@@ -1,5 +1,15 @@
 import { Board } from 'react-trello'
-import { isi, iss, local, render, h, $, dur_inc_sec, moment } from '../util'
+import {
+  isi,
+  iss,
+  local,
+  render,
+  h,
+  $,
+  dur_inc_sec,
+  moment,
+  keymaps
+} from '../util'
 
 let lanes,
   kanban,
@@ -54,32 +64,6 @@ function close() {
   kanban.iCard = iCard
   kanban.iLane = iLane
   local.update(kanban)
-}
-let imap = {
-  up: ['focus_up', 1],
-  dn: ['focus_dn', 1],
-  mup: ['focus_lft', 1],
-  mdn: ['focus_rit', 1],
-  esc: ['blur'],
-  ent: ['open_note']
-}
-let nmap = {
-  ent: ['open_note'],
-  a: ['add'],
-  r: ['rm'],
-  s: ['mv_lft'],
-  d: ['mv_rit'],
-  t: ['mv_rit'],
-  w: ['mv_up'],
-  e: ['mv_dn'],
-  i: ['focus'],
-  up: ['focus_up'],
-  dn: ['focus_dn'],
-  lft: ['focus_lft'],
-  rit: ['focus_rit'],
-  esc: ['open_last'],
-  x: ['last_day'],
-  c: ['next_day']
 }
 let action = {
   next_day() {
@@ -282,4 +266,4 @@ function CustomCard(props) {
   ])
 }
 
-export default { imap, nmap, action, view, open }
+export default { action, view, open }

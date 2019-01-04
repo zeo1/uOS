@@ -1,4 +1,4 @@
-import { $, local, h, render, iss, fuzzy_search } from '../util'
+import { $, local, h, render, iss, fuzzy_search, keymaps } from '../util'
 import marked from 'marked'
 
 let action = {
@@ -26,16 +26,6 @@ let action = {
     $('#query').focus()
   }
 }
-let imap = {
-  up: ['select_up'],
-  dn: ['select_dn'],
-  ent: ['open'],
-  tab: ['create']
-}
-let nmap = {
-  i: ['focus']
-}
-export default { open, view, action, imap, nmap }
 let s = { select: 0 }
 function open(sQuery) {
   s.query = sQuery
@@ -85,3 +75,5 @@ function onChange() {
   open(query)
   view()
 }
+
+export default { open, view, action }

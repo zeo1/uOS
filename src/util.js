@@ -1,8 +1,7 @@
 import u from 'lodash'
 import { render } from 'react-dom'
 import { h } from './view'
-import { local } from './data/local'
-import parse from './data/parse'
+import { local, keymaps } from './data/local'
 import moment from 'moment'
 
 let c = console.log,
@@ -13,14 +12,15 @@ let c = console.log,
   isf = u.isFunction,
   isi = u.isInteger,
   each = u.each,
-  map = u.map
+  map = u.map,
+  keys = Object.keys
 
 export {
   moment,
   h,
   render,
   local,
-  parse,
+  keymaps,
   c,
   $,
   isa,
@@ -30,6 +30,7 @@ export {
   isi,
   each,
   map,
+  keys,
   dur_inc_sec,
   fuzzy_search
 }
