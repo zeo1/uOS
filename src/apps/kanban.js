@@ -7,11 +7,10 @@ import {
   h,
   $,
   dur_inc_sec,
-  dur_add_ms,
+  dur_add_str,
   moment,
   keymaps
 } from '../util'
-
 let lanes,
   kanban,
   iInterval,
@@ -204,7 +203,10 @@ function view(focus) {
   }
   let totolTime = lanes.reduce(
     (a, l) =>
-      dur_add_ms(a, l.cards.reduce((a, c) => dur_add_ms(c.timecost, a), '0:0')),
+      dur_add_str(
+        a,
+        l.cards.reduce((a, c) => dur_add_str(c.timecost, a), '0:0')
+      ),
     '0:0'
   )
   render(
@@ -227,7 +229,7 @@ function view(focus) {
       [
         'div flex center',
         ['div gray b ma2', moment(kanban.name).format('Y-MM-DD ddd')],
-        ['div ma2 moon-gray', totolTime.slice(0, -3) + 'm']
+        ['div ma2 moon-gray', totolTime]
       ]
     ),
     $('#r')
@@ -237,7 +239,7 @@ function view(focus) {
   local.update(kanban)
 }
 function CustomHead(p) {
-  let totol = p.cards.reduce((a, c) => dur_add_ms(c.timecost, a), '0:0')
+  let totol = p.cards.reduce((a, c) => dur_add_str(c.timecost, a), '0:0')
   return h('div b flex justify-between', p.id, ['div', totol])
 }
 function CustomCard(props) {
@@ -277,7 +279,7 @@ function CustomCard(props) {
     [
       'input pv1 outline-0 b bg-transparent bn tr ' + color,
       {
-        width: 60,
+        width: 64,
         id: 'timecost' + props.$loki,
         onChange: change('timecost'),
         onFocus() {
