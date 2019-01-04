@@ -7,6 +7,7 @@ import {
   h,
   $,
   dur_inc_sec,
+  dur_add_ms,
   moment,
   keymaps
 } from '../util'
@@ -32,7 +33,7 @@ function open(date, last) {
           { title: 'Inbox', cards: [] },
           { title: 'Next', cards: [] },
           { title: 'Log', cards: [] },
-          { title: 'Review', cards: [] }
+          { title: 'How', cards: [] }
         ]
       }
       local.insert(kanban)
@@ -176,14 +177,16 @@ let action = {
       title: l.title
     }))
   },
-  startTimer() {
+  startTimer(id) {
+    id = id || 'timecost'
     clearInterval(iInterval)
     let card = lanes[iLane].cards[iCard]
     iInterval = setInterval(function() {
-      $('#timecost' + card.$loki).value = card.timecost = dur_inc_sec(
+      $('#' + id + card.$loki).value = card.timecost = dur_inc_sec(
         card.timecost
       )
       local.update(card)
+      view()
     }, 1000)
   }
 }
@@ -194,6 +197,16 @@ function focus_curent_card() {
 
 function view(focus) {
   if (!lanes) return
+  function onIdleChange() {
+    kanban.timeidle = $('#timeidle').value
+    local.update(kanban)
+    view()
+  }
+  let totolTime = lanes.reduce(
+    (a, l) =>
+      dur_add_ms(a, l.cards.reduce((a, c) => dur_add_ms(c.timecost, a), '0:0')),
+    '0:0'
+  )
   render(
     h(
       'div flex flex-column justify-between h-100',
@@ -206,17 +219,26 @@ function view(focus) {
           width: '100%',
           margin: 'auto',
           cardDraggable: true,
+          customLaneHeader: h(CustomHead),
           customCardLayout: true
         },
         [CustomCard]
       ],
-      ['div gray center pa2 b', moment(kanban.name).format('Y-MM-DD ddd')]
+      [
+        'div flex center',
+        ['div gray b ma2', moment(kanban.name).format('Y-MM-DD ddd')],
+        ['div ma2 moon-gray', totolTime.slice(0, -3) + 'm']
+      ]
     ),
     $('#r')
   )
   if (focus) focus_curent_card()
   action.save()
   local.update(kanban)
+}
+function CustomHead(p) {
+  let totol = p.cards.reduce((a, c) => dur_add_ms(c.timecost, a), '0:0')
+  return h('div b flex justify-between', p.id, ['div', totol])
 }
 function CustomCard(props) {
   function find_card() {

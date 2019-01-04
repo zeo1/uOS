@@ -32,20 +32,29 @@ export {
   map,
   keys,
   dur_inc_sec,
+  dur_add_ms,
   fuzzy_search
 }
 
-function dur_inc_sec(sTime, seconds) {
-  let iTime = +sTime
-  if (isNaN(iTime)) {
-    let [min, sec] = sTime.split(':')
-    iTime = min * 60 + sec * 1
-  }
-  if (iTime > 60 * 999) return
-  iTime += seconds || 1
+function dur_from_ms(sTime) {
+  let [min, sec] = sTime.split(':')
+  return min * 60 + sec * 1
+}
+function dur_to_ms(iTime) {
   let sec = ('0' + (iTime % 60)).slice(-2)
   let min = Math.floor(iTime / 60)
   return min + ':' + sec
+}
+function dur_inc_sec(sTime, seconds) {
+  let iTime = +sTime
+  if (isNaN(iTime)) iTime = dur_from_ms(sTime)
+  if (iTime > 60 * 999) return
+  iTime += seconds || 1
+  return dur_to_ms(iTime)
+}
+function dur_add_ms(a, b) {
+  let iTime = dur_from_ms(a) + dur_from_ms(b)
+  return dur_to_ms(iTime)
 }
 function fuzzy_search(s, str) {
   let i = 0,
