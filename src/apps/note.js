@@ -26,17 +26,17 @@ let action = {
   },
   open_last() {
     if (cancelEscOnce === 1) cancelEscOnce = 0
-    else {
-      clearInterval(iInterval)
-      cm.toTextArea()
-      return ['open', ...lastApp]
-    }
+    else return ['open', ...lastApp]
   }
 }
 export default {
   view,
   open,
-  action
+  action,
+  close() {
+    clearInterval(iInterval)
+    cm.toTextArea()
+  }
 }
 function startTimer() {
   clearInterval(iInterval)

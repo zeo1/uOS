@@ -253,8 +253,9 @@ function CustomCard(props) {
       }
     ],
     [
-      'input pv1 outline-0 b bg-transparent bn tr w3 ' + color,
+      'input pv1 outline-0 b bg-transparent bn tr ' + color,
       {
+        width: 60,
         id: 'timecost' + props.$loki,
         onChange: change('timecost'),
         onFocus() {

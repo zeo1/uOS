@@ -40,7 +40,6 @@ function open(sQuery) {
   s.list = local
     .where(c => s.tagsQuery.every(tag => c.tags && c.tags.indexOf(tag) != -1))
     .filter(v => fuzzy_search(s.nameQuery, v.name))
-  console.log(s)
   view()
   action.focus()
 }
@@ -55,7 +54,7 @@ function view() {
       'div flex white center shadow h-100',
       { maxWidth: 999 },
       [
-        'div flex-auto br bw-1 b--dark-gray white tr',
+        'div flex-auto br bw-1 b--dark-gray white tr overflow-hidden',
         [
           'input pa3 bg-dark-gray w-100 white b',
           { value: s.query, id: 'query', onChange }

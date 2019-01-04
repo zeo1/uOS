@@ -18,6 +18,7 @@ let action = {
       currentOpen = lastOpen
       lastOpen = a
     }
+    if (app && app.close) app.close()
     app = apps[name]
     if (app.open) app.open(...args)
   },
