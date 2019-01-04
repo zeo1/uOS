@@ -14,6 +14,11 @@ k q setting::`
       notion: `ac1 kmap desktop`
     },
     {
+      name: 'global_nmap',
+      tags: 'setting keymap',
+      notion: `spc kmap desktop`
+    },
+    {
       name: 'note_nmap',
       tags: 'setting keymap',
       notion: `i focus

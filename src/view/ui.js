@@ -2,7 +2,11 @@ import { isa, each, map, h, render, $, keymaps } from '../util'
 import apps from '../apps'
 
 render(
-  h('div h-100', ['div h-100 fl', { id: 'l' }], ['div h-100', { id: 'r' }]),
+  h(
+    'div h-100',
+    ['div h-100 fixed top-0 left-0 o-80 z-1', { id: 'l' }],
+    ['div h-100', { id: 'r' }]
+  ),
   $('#root')
 )
 
@@ -45,11 +49,13 @@ let action = {
     )
   },
   key(abbr, e) {
-    if (!kmap)
-      kmap = document.activeElement === document.body ? app.nmap : app.imap
+    let active = document.activeElement !== document.body
+    if (!kmap) kmap = active ? app.imap : app.nmap
     if (!kmap) return console.log('no kmap')
-    let command = kmap[abbr] || keymaps.global[abbr]
-    kmap = 0
+    let command = kmap[abbr]
+    if (!command)
+      command = active ? keymaps.global[abbr] : keymaps.global_nmap[abbr]
+    kmap = null
     render(h('div'), $('#l'))
     if (!command || !isa(command)) return
     if (e) e.preventDefault()
@@ -66,9 +72,9 @@ let action = {
   q(query) {
     return ['open', 'query', query || '']
   },
-  k(date) {
+  d(date) {
     if (date === 'today') date = new Date().toJSON().slice(0, 10)
-    return ['open', 'kanban', date]
+    return ['open', kanban, date]
   }
 }
 

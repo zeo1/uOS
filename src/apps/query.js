@@ -1,6 +1,6 @@
 import { $, local, h, render, iss, fuzzy_search, keymaps } from '../util'
 import marked from 'marked'
-marked.setOptions({ gfm: true })
+marked.setOptions({ gfm: true, breaks: true })
 
 let action = {
   select_up() {
@@ -10,6 +10,7 @@ let action = {
     if (s.select < s.list.length - 1) s.select++
   },
   open() {
+    if (!s.list.length) return action.create()
     let card = s.list[s.select]
     let name = card.tags.indexOf('kanban') === -1 ? 'note' : 'kanban'
     return ['open', name, s.list[s.select].$loki, ['query', s.query]]
