@@ -1,5 +1,6 @@
 import { $, local, h, render, iss, fuzzy_search, keymaps } from '../util'
 import marked from 'marked'
+marked.setOptions({ gfm: true })
 
 let action = {
   select_up() {
