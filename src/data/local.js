@@ -18,6 +18,7 @@ db = new loki('indexed.db', {
 
 function load_local() {
   local = db.getCollection('text')
+  reset(local)
   if (local === null || !local.data.length) {
     local = db.addCollection('text')
     reset(local)
