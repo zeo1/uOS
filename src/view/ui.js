@@ -74,7 +74,7 @@ let action = {
   },
   d(date) {
     if (date === 'today') date = new Date().toJSON().slice(0, 10)
-    return ['open', kanban, date]
+    return ['open', 'kanban', date]
   }
 }
 
