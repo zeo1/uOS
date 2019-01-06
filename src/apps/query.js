@@ -26,6 +26,9 @@ let action = {
   },
   focus() {
     $('#query').focus()
+  },
+  blur() {
+    $('#query').blur()
   }
 }
 let s = { select: 0 }

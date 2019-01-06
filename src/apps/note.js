@@ -1,7 +1,7 @@
 import { render } from 'react-dom'
 import { h } from '../view'
 import { $, dur_inc_sec } from '../util'
-import { local } from '../data/local'
+import { local, update_keymaps } from '../data/local'
 import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/gfm/gfm'
@@ -14,8 +14,9 @@ import 'codemirror/addon/selection/active-line.js'
 let cancelEscOnce = 0
 let card, cm, iInterval, lastApp
 let action = {
-  focus() {
-    cm.focus()
+  focus(id) {
+    if (id) $(id).focus()
+    else cm.focus()
   },
   blur() {
     document.activeElement.blur()
@@ -27,7 +28,8 @@ let action = {
   open_last() {
     if (cancelEscOnce === 1) cancelEscOnce = 0
     else return ['open', ...lastApp]
-  }
+  },
+  toggleUnorderedList
 }
 export default {
   view,
@@ -92,14 +94,16 @@ function open(id, last) {
   cm.setOption('extraKeys', {
     Enter: CodeMirror.commands.newlineAndIndentContinueMarkdownList,
     Tab: CodeMirror.commands.indentMore,
-    Esc: action.blur,
-    'Cmd-U': toggleUnorderedList
+    Esc: action.blur
   })
   if (card.cursor) cm.setCursor(card.cursor)
   cm.on('change', e => {
     card.notion = cm.getValue()
     card.cursor = cm.getCursor()
     local.update(card)
+    if (card.tags.indexOf('setting keymap') >= 0) {
+      update_keymaps()
+    }
   })
   cm.on('focus', startTimer)
 }

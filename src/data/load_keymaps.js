@@ -13,9 +13,8 @@ function parse(notion) {
   return kmap
 }
 
-export default function(l) {
-  let arr = l.find({ tags: { $contains: 'setting keymap' } })
-  let keymaps = {}
+function load(l, str, keymaps) {
+  let arr = l.find({ tags: { $contains: `config ${str} keymap` } })
   each(arr, a => {
     keymaps[a.name] = parse(a.notion)
   })
@@ -26,6 +25,12 @@ export default function(l) {
     if (nmap) app.nmap = nmap
     if (imap) app.imap = imap
   })
+}
+
+export default function(l) {
+  let keymaps = {}
+  load(l, 'user', keymaps)
+  load(l, 'default', keymaps)
   console.log(keymaps)
   return keymaps
 }
