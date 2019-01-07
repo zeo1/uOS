@@ -29,10 +29,10 @@ function open(date, last) {
         name: date,
         tags: 'kanban',
         notion: [
-          { title: 'Inbox', cards: [] },
-          { title: 'Next', cards: [] },
-          { title: 'Log', cards: [] },
-          { title: 'How', cards: [] }
+          { title: 'Energy', cards: [] },
+          { title: 'Think', cards: [] },
+          { title: 'Do', cards: [] },
+          { title: 'Grow', cards: [] }
         ]
       }
       local.insert(kanban)

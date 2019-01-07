@@ -69,8 +69,8 @@ let action = {
     else r = app.view()
     if (r && r.props && r._store) render(r, $('#r'))
   },
-  q(query) {
-    return ['open', 'query', query || '']
+  f(query) {
+    return ['open', 'finder', query || '']
   },
   d(date) {
     if (date === 'today') date = new Date().toJSON().slice(0, 10)

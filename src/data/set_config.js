@@ -3,9 +3,10 @@ import { each } from '../util'
 export default function(l) {
   let notionMap = {
     desktop: `
-m q 
+m f
 t d today
-k q config::`,
+u f config user::
+d f config default::`,
     global_imap: `
 f4 kmap desktop
 esc blur`,
@@ -16,12 +17,12 @@ n focus #name
 t focus #tags
 esc open_last`,
     note_imap: ``,
-    query_imap: `
+    finder_imap: `
 up select_up
 dn select_dn
 ent open
 tab create`,
-    query_nmap: `i focus`,
+    finder_nmap: `i focus`,
     kanban_nmap: `
 ent open_note
 a add
