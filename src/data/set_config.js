@@ -4,7 +4,7 @@ export default function(l) {
   let notionMap = {
     desktop: `
 m f
-t d today
+t k today
 u f config user::
 d f config default::`,
     global_imap: `
@@ -22,7 +22,8 @@ up select_up
 dn select_dn
 ent open
 tab create`,
-    finder_nmap: `i focus`,
+    finder_nmap: `i focus
+esc open_today`,
     kanban_nmap: `
 ent open_note
 a add

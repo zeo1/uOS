@@ -13,6 +13,7 @@ render(
 let app, lastOpen, currentOpen, kmap
 let action = {
   open(name, ...args) {
+    console.log('open')
     if (name !== 'lastApp') {
       lastOpen = currentOpen
       currentOpen = [name, args]
@@ -65,16 +66,17 @@ let action = {
     let cmd = app.action[name] || action[name]
     if (!cmd) return console.log('no cmd: ', name)
     let r = cmd(...args)
+    console.log(r)
     if (isa(r)) ui(...r)
     else r = app.view()
     if (r && r.props && r._store) render(r, $('#r'))
   },
   f(...query) {
-    return ['open', 'finder', query.join(' ')]
+    action.open('finder', query.join(' '))
   },
-  d(date) {
+  k(date) {
     if (date === 'today') date = new Date().toJSON().slice(0, 10)
-    return ['open', 'kanban', date]
+    action.open('kanban', date)
   }
 }
 

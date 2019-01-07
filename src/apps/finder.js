@@ -29,6 +29,9 @@ let action = {
   },
   blur() {
     $('#query').blur()
+  },
+  open_today() {
+    return ['k', 'today']
   }
 }
 let s = { select: 0 }
