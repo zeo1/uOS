@@ -240,12 +240,12 @@ function view(focus) {
 }
 function CustomHead(p) {
   let totol = p.cards.reduce((a, c) => dur_add_str(c.timecost, a), '0:0')
-  let width = innerWidth / 4 - 42
+  let width = window.innerWidth / 4 - 42
   if (width < 250) width = 250
   return h('div b flex justify-between', { width }, p.id, ['div', totol])
 }
 function CustomCard(props) {
-  let width = innerWidth / 4 - 42
+  let width = window.innerWidth / 4 - 42
   if (width < 250) width = 250
   function find_card() {
     let lane = lanes.find(l => l.id === props.laneId)
