@@ -240,9 +240,13 @@ function view(focus) {
 }
 function CustomHead(p) {
   let totol = p.cards.reduce((a, c) => dur_add_str(c.timecost, a), '0:0')
-  return h('div b flex justify-between', p.id, ['div', totol])
+  let width = innerWidth / 4 - 42
+  if (width < 250) width = 250
+  return h('div b flex justify-between', { width }, p.id, ['div', totol])
 }
 function CustomCard(props) {
+  let width = innerWidth / 4 - 42
+  if (width < 250) width = 250
   function find_card() {
     let lane = lanes.find(l => l.id === props.laneId)
     return lane.cards[props.index]
@@ -265,10 +269,10 @@ function CustomCard(props) {
     return props.index === iCard && props.laneId === lanes[iLane].id
   }
   let color = isSelect() ? 'red' : 'moon-gray'
-  return h('div bg-near-black w-100', [
+  return h('div bg-near-black', { width }, [
     'header flex',
     [
-      'input pv1 outline-0 moon-gray b bg-transparent bn',
+      'input w-100 pv1 outline-0 moon-gray b bg-transparent bn',
       {
         id: 'name' + props.$loki,
         onFocus: onClick,
