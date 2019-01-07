@@ -8,7 +8,7 @@ t d today
 k q config::`,
     global_imap: `
 f4 kmap desktop
-esc blur `,
+esc blur`,
     global_nmap: `f4 kmap desktop`,
     note_nmap: `,
 i focus

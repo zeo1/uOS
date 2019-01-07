@@ -54,7 +54,7 @@ let action = {
     if (!kmap) return console.log('no kmap')
     let command = kmap[abbr]
     if (!command)
-      command = active ? keymaps.global[abbr] : keymaps.global_nmap[abbr]
+      command = active ? keymaps.global_imap[abbr] : keymaps.global_nmap[abbr]
     kmap = null
     render(h('div'), $('#l'))
     if (!command || !isa(command)) return

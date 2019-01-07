@@ -19,11 +19,14 @@ let action = {
     else cm.focus()
   },
   blur() {
-    document.activeElement.blur()
-    cancelEscOnce = 1
+    let el = document.activeElement
+    el.blur()
     clearInterval(iInterval)
-    card.cursor = cm.getCursor()
-    local.update(card)
+    if (el.nodeName === 'TEXTAREA') {
+      cancelEscOnce = 1
+      card.cursor = cm.getCursor()
+      local.update(card)
+    }
   },
   open_last() {
     if (cancelEscOnce === 1) cancelEscOnce = 0
