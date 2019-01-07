@@ -53,6 +53,12 @@ function view() {
     let n = local.get(s.list[s.select].$loki).notion
     preview = iss(n) ? marked(n) : `<pre>${JSON.stringify(n, null, 2)}</pre>`
   }
+  function click(i) {
+    return e => {
+      s.select = i
+      view()
+    }
+  }
   render(
     h('div pa3 h-100', [
       'div flex white center shadow h-100',
@@ -65,7 +71,11 @@ function view() {
         ],
         ...s.list.map((card, i) => {
           let color = i === s.select ? ' blue' : ''
-          return ['div pa2' + color, { paddingRight: 20 }, card.name]
+          return [
+            'div pa2' + color,
+            { onClick: click(i), paddingRight: 20 },
+            card.name
+          ]
         })
       ],
       ['div overflow-scroll pa3', { width: 700, id: 'preview' }]
