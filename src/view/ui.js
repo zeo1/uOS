@@ -1,4 +1,4 @@
-import { isa, each, map, h, render, $, keymaps } from '../util'
+import { isa, each, map, h, render, $, keymaps, moment } from '../util'
 import apps from '../apps'
 
 render(
@@ -75,7 +75,7 @@ let action = {
     action.open('finder', query.join(' '))
   },
   k(date) {
-    if (date === 'today') date = new Date().toJSON().slice(0, 10)
+    if (date === 'today') date = moment().format('Y-MM-DD')
     action.open('kanban', date)
   }
 }
