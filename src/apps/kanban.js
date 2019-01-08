@@ -179,10 +179,15 @@ let action = {
   startTimer(id) {
     id = id || 'timecost'
     clearInterval(iInterval)
+    let last = Date.now()
     let card = lanes[iLane].cards[iCard]
     iInterval = setInterval(function() {
+      let now = Date.now()
+      let sec = Math.round((now - last) / 1000)
+      last = now
       $('#' + id + card.$loki).value = card.timecost = dur_inc_sec(
-        card.timecost
+        card.timecost,
+        sec
       )
       local.update(card)
       view()

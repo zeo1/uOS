@@ -45,8 +45,12 @@ export default {
 }
 function startTimer() {
   clearInterval(iInterval)
+  let last = Date.now()
   iInterval = setInterval(function() {
-    $('#timecost').innerText = card.timecost = dur_inc_sec(card.timecost)
+    let now = Date.now()
+    let sec = Math.round((now - last) / 1000)
+    last = now
+    $('#timecost').innerText = card.timecost = dur_inc_sec(card.timecost, sec)
     local.update(card)
   }, 1000)
 }
