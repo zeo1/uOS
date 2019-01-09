@@ -128,13 +128,13 @@ let action = {
     if (iLane > 0) iLane--
     else iLane = lanes.length - 1
     let max = lanes[iLane].cards.length - 1
-    if (iCard > max) iCard = max
+    if (iCard > max || iCard === -1) iCard = max
     if (b) focus_curent_card()
   },
   focus_rit(b) {
     if (++iLane === lanes.length) iLane = 0
     let max = lanes[iLane].cards.length - 1
-    if (iCard > max) iCard = max
+    if (iCard > max || iCard === -1) iCard = max
     if (b) focus_curent_card()
   },
   mv_lft() {
