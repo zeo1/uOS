@@ -11,7 +11,6 @@ import 'codemirror/addon/edit/continuelist'
 import 'codemirror/addon/edit/closebrackets.js'
 import 'codemirror/addon/selection/active-line.js'
 
-let cancelEscOnce = 0
 let card, cm, iInterval, lastApp
 let action = {
   focus(id) {
@@ -23,14 +22,15 @@ let action = {
     el.blur()
     clearInterval(iInterval)
     if (el.nodeName === 'TEXTAREA') {
-      cancelEscOnce = 1
       card.cursor = cm.getCursor()
       local.update(card)
+      if (card.tags.indexOf('config user keymap') >= 0) {
+        update_keymaps()
+      }
     }
   },
   open_last() {
-    if (cancelEscOnce === 1) cancelEscOnce = 0
-    else return ['open', ...lastApp]
+    return ['open', ...lastApp]
   },
   toggleUnorderedList
 }
@@ -100,17 +100,13 @@ function open(id, last) {
   })
   cm.setOption('extraKeys', {
     Enter: CodeMirror.commands.newlineAndIndentContinueMarkdownList,
-    Tab: CodeMirror.commands.indentMore,
-    Esc: action.blur
+    Tab: CodeMirror.commands.indentMore
   })
   if (card.cursor) cm.setCursor(card.cursor)
   cm.on('change', e => {
     card.notion = cm.getValue()
     card.cursor = cm.getCursor()
     local.update(card)
-    if (card.tags.indexOf('setting keymap') >= 0) {
-      update_keymaps()
-    }
   })
   cm.on('focus', startTimer)
 }
