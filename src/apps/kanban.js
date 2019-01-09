@@ -29,9 +29,9 @@ function open(date, last) {
         name: date,
         tags: 'kanban',
         notion: [
-          { title: 'Energy', cards: [] },
+          { title: 'Life', cards: [] },
           { title: 'Think', cards: [] },
-          { title: 'Do', cards: [] },
+          { title: 'Work', cards: [] },
           { title: 'Grow', cards: [] }
         ]
       }

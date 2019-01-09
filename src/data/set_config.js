@@ -16,7 +16,7 @@ i focus
 n focus #name
 t focus #tags
 esc open_last`,
-    note_imap: ``,
+    note_imap: `ml toggleUnorderedList`,
     finder_imap: `
 up select_up
 dn select_dn
