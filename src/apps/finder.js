@@ -13,7 +13,7 @@ let action = {
     if (!s.list.length) return action.create()
     let card = s.list[s.select]
     let name = card.tags.indexOf('kanban') === -1 ? 'note' : 'kanban'
-    return ['open', name, s.list[s.select].$loki, ['query', s.query]]
+    return ['open', name, s.list[s.select].$loki, ['finder', s.query]]
   },
   create() {
     let c = local.insert({
@@ -22,7 +22,7 @@ let action = {
       timecost: '0:00',
       notion: ''
     })
-    return ['open', 'note', c.$loki, ['query', s.query]]
+    return ['open', 'note', c.$loki, ['finder', s.query]]
   },
   focus() {
     $('#query').focus()
