@@ -112,11 +112,12 @@ function open(id, last) {
 }
 
 function toggleUnorderedList() {
-  let start = cm.getCursor('from')
-  let end = cm.getCursor('to')
+  let from = cm.getCursor('from')
+  let to = cm.getCursor('to')
+  let end = to.ch ? to.line : to.line - 1
   let regexp = /^(\s{0,})((\+|\*|\-)\s?)/
   let isList, match
-  for (let i = start.line; i <= end.line; i++) {
+  for (let i = from.line; i <= end; i++) {
     let line = cm.getLine(i)
     // Is this an ordered list ?
     if ((match = /^(\s?)(([0-9]+\.)\s+)/.exec(line))) {
@@ -140,5 +141,8 @@ function toggleUnorderedList() {
         { line: i, ch: line.length }
       )
     }
+  }
+  if (!to.ch) {
+    cm.setSelection(from, { line: end, ch: cm.getLine(end).length })
   }
 }
