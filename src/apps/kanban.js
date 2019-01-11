@@ -30,7 +30,7 @@ function open(date, last) {
         tags: 'kanban',
         notion: [
           { title: 'Life', cards: [] },
-          { title: 'Think', cards: [] },
+          { title: 'Plan', cards: [] },
           { title: 'Work', cards: [] },
           { title: 'Grow', cards: [] }
         ]
@@ -247,9 +247,13 @@ function view(focus) {
 }
 function CustomHead(p) {
   let totol = p.cards.reduce((a, c) => dur_add_str(c.timecost, a), '0:0')
+  let color = p.index === iLane ? ' red' : ''
   let width = window.innerWidth / 4 - 42
   if (width < 250) width = 250
-  return h('div b flex justify-between', { width }, p.id, ['div', totol])
+  return h('div b flex justify-between', { width }, p.id, [
+    'div' + color,
+    totol
+  ])
 }
 function CustomCard(props) {
   let width = window.innerWidth / 4 - 42
