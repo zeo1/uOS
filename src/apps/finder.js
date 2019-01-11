@@ -89,6 +89,7 @@ function view() {
 }
 function onChange() {
   let query = $('#query').value
+  s.select = 0
   open(query)
   view()
 }
