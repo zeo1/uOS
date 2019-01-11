@@ -57,7 +57,7 @@ function open(date, last) {
       })
     }
   })
-  view(kanban.iCard)
+  view()
 }
 function close() {
   clearInterval(iInterval)
