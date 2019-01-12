@@ -1,5 +1,7 @@
 # uOS
 
+[![Join the chat at https://gitter.im/uOS_cn/community](https://badges.gitter.im/uOS_cn/community.svg)](https://gitter.im/uOS_cn/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 - keyboard first, like Emacs|Vim but better
 - minimal UI, distraction-free
 - programmer friendly, fully customizable
